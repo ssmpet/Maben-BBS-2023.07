@@ -1,4 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <%-- <body> 상단에 있는 navigation var --%>
 
 <nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-top">
@@ -14,10 +16,15 @@
                 <a class="nav-link ${(menu eq 'board') ? 'active' : ''}" href="/bbs/board/list?p=1&f=&q="><i class="far fa-list-alt"></i> 게시판</a>
             </li>
             <li class="nav-item ms-3">
-                <a class="nav-link"  ${(menu eq 'user') ? 'active' : ''} href="/bbs/user/list?page=1"><i class="fas fa-user-friends"></i> 사용자</a>
+                <a class="nav-link  ${(menu eq 'user') ? 'active' : ''}" href="/bbs/user/list?page=1"><i class="fas fa-user-friends"></i> 사용자</a>
             </li>
             <li class="nav-item ms-3">
-                <a class="nav-link" href="/bbs/user/logout"><i class="fas fa-sign-out-alt"></i> 로그아웃</a>
+				<c:if test="${not empty uid}">
+                	<a class="nav-link" href="/bbs/user/logout"><i class="fa-solid fa-right-from-bracket"></i> 로그아웃</a>
+				</c:if>
+				<c:if test="${ empty uid }">
+                	<a class="nav-link" href="/bbs/user/login"><i class="fa-solid fa-right-to-bracket"></i>로그인</a>
+				</c:if>
             </li>
         </ul>
         <span class="navbar-text me-3">${uname}님 환영합니다.</span>

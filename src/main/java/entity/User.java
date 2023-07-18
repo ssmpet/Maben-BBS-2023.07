@@ -2,7 +2,7 @@ package entity;
 
 import java.time.LocalDate;
 
-public class Users {
+public class User {
 	private String uid;
 	private String pwd;
 	private String uname;
@@ -12,9 +12,27 @@ public class Users {
 	private String profile;
 	private String addr;
 	
-	public Users() {	}
+	public User() {	}
+	// Update 할 경우 사용
+	public User(String uid, String uname, String email, String profile, String addr) {
+		this.uid = uid;
+		this.uname = uname;
+		this.email = email;
+		this.profile = profile;
+		this.addr = addr;
+	}
 
-	public Users(String uid, String pwd, String uname, String email, LocalDate regDate, int isDeleted, String profile,
+	// Insert 할 경우 사용
+	public User(String uid, String pwd, String uname, String email, String profile, String addr) {
+		this.uid = uid;
+		this.pwd = pwd;
+		this.uname = uname;
+		this.email = email;
+		this.profile = profile;
+		this.addr = addr;
+	}
+
+	public User(String uid, String pwd, String uname, String email, LocalDate regDate, int isDeleted, String profile,
 			String addr) {
 		this.uid = uid;
 		this.pwd = pwd;
@@ -25,16 +43,7 @@ public class Users {
 		this.profile = profile;
 		this.addr = addr;
 	}
-
-	public Users(String uid, String pwd, String uname, String email, String profile, String addr) {
-		this.uid = uid;
-		this.pwd = pwd;
-		this.uname = uname;
-		this.email = email;
-		this.profile = profile;
-		this.addr = addr;
-	}
-
+	
 	@Override
 	public String toString() {
 		return "Users [uid=" + uid + ", pwd=" + pwd + ", uname=" + uname + ", email=" + email + ", regDate=" + regDate
