@@ -1,1 +1,0 @@
-select count(bid) from board where isDeleted=0 AND  title LIKE '%%'
