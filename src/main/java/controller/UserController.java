@@ -183,14 +183,11 @@ public class UserController extends HttpServlet {
 				try {
 					filename = filePart.getSubmittedFileName();
 					int dotPosition = filename.indexOf(".");
-
-					String firstPart = filename.substring(0, dotPosition);
-					
 					if ( !(oldFilename == null && oldFilename.equals(""))) {
 						File oldFile = new File(PROFILE_PATH + oldFilename);
 						oldFile.delete();
 					}
-
+					String firstPart = filename.substring(0, dotPosition);
 					filename = filename.replace(firstPart, uid);
 					filePart.write(PROFILE_PATH + filename);			
 				} catch (Exception e) {
