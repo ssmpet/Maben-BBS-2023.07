@@ -21,8 +21,8 @@ import org.mindrot.jbcrypt.BCrypt;
 
 import com.mysql.cj.x.protobuf.MysqlxCrud.Delete;
 
+import db.UserDao;
 import entity.User;
-import entity.UserDao;
 import utility.UserService;
 
 /**
@@ -36,6 +36,8 @@ import utility.UserService;
 )
 public class UserController extends HttpServlet {
 	public static final String PROFILE_PATH = "c:/temp/profile/";
+	public static final int LIST_PER_PAGE = 10;		// 한 페이지당 사용자 목록의 갯수
+	public static final int PAGE_PER_SCREEN = 10;	// 한 화면에 표시되는 페이지 갯수
 	
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
@@ -73,7 +75,7 @@ public class UserController extends HttpServlet {
 					request.getSession().setAttribute("addr", user.getAddr());
 				
 					request.setAttribute("msg", user.getUname() + "님 환영합니다.");
-					request.setAttribute("url", "/bbs/user/list?page=1");
+					request.setAttribute("url", "/bbs/board/list?p=1&f=&q=");
 					rd = request.getRequestDispatcher("/WEB-INF/view/common/alertMsg.jsp");
 					rd.forward(request, response);				
 					
@@ -102,14 +104,22 @@ public class UserController extends HttpServlet {
 			String page = request.getParameter("page");
 			List<User> list = uDao.getUserList(Integer.parseInt(page));
 			request.setAttribute("userList", list);
+			
 			int totalUsers = uDao.getUserCount();
-			int totalPages = (int)(Math.ceil(totalUsers/10.));
+			int totalPages = (int) (Math.ceil(totalUsers / (double) LIST_PER_PAGE));
+			int startPage = (int) Math.ceil((Integer.parseInt(page) - 0.5) / PAGE_PER_SCREEN - 1) * PAGE_PER_SCREEN + 1;
+			int endPage = Math.min(totalPages, startPage + PAGE_PER_SCREEN - 1);
+			
 			List<String> pageList = new ArrayList<String>();
-			for (int i=1; i<=totalPages; i++) {
+			for (int i=startPage; i<=endPage; i++) {
 				pageList.add(String.valueOf(i));
 			}
-			request.setAttribute("pageList", pageList);
 			session.setAttribute("currentUserPage", page);
+			
+			request.setAttribute("pageList", pageList);
+			request.setAttribute("totalPages", totalPages);
+			request.setAttribute("startPage", startPage);
+			request.setAttribute("endPage", endPage);
 			
 			rd = request.getRequestDispatcher("/WEB-INF/view/user/list.jsp?page=" + page);
 			rd.forward(request, response);
@@ -206,7 +216,7 @@ public class UserController extends HttpServlet {
 			
 		case "delete":
 			uid = request.getParameter("uid");
-			rd = request.getRequestDispatcher("/WEB-INF/view/user/delete.jsp?user=" + uid);
+			rd = request.getRequestDispatcher("/WEB-INF/view/user/delete.jsp?uid=" + uid);
 			rd.forward(request, response);
 			break;
 			
@@ -216,6 +226,20 @@ public class UserController extends HttpServlet {
 			response.sendRedirect("/bbs/user/list?page=" + session.getAttribute("currentUserPage"));
 			break;
 			
+		case "testuser":
+//			pwd = "1234";
+//			String hashedPwd = BCrypt.hashpw(pwd, BCrypt.gensalt());
+//			addr = "경기도 수원시 장안구";
+//			
+//			for (int i=21; i<=270; i++) {
+//				uid = "user" + i;
+//				uname = "사용자" + i;
+//				email = uid + "@naver.com";
+//				user = new User(uid, hashedPwd, uname, email, filename, addr);
+//				uDao.registerUser(user);				
+//			}
+			response.sendRedirect("/bbs/user/list?page=1");
+			break;
 		default:
 			System.out.println(request.getRequestURI() + "잘못된 경로입니다. ");
 			break;

@@ -2,8 +2,8 @@ package utility;
 
 import org.mindrot.jbcrypt.BCrypt;
 
+import db.UserDao;
 import entity.User;
-import entity.UserDao;
 
 public class UserService {
 	public static final int CORRECT_LOGIN = 0;

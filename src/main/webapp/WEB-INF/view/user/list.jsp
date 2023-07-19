@@ -59,13 +59,25 @@
 		        </table>
 		         <%-- 페이지 네이션 --%>
 		        <ul class="pagination justify-content-center">
-		        	<li class="page-item"><a class="page-link" href="">&laquo; 이전</a></li>
+		        <c:if test="${currentUserPage gt 10 }">
+		        	<li class="page-item"><a class="page-link" href="/bbs/user/list?page=${startPage-1}">&laquo; </a></li>
+		        </c:if>
+		        <c:if test="${currentUserPage le 10 }">
+		          	<li class="page-item"><a class="page-link" href="#">&laquo; </a></li>
+		        </c:if>
+		        	
 		        <c:forEach var="page" items="${pageList}">
 		        	<li class="page-item ${(currentUserPage eq page) ? 'active' : ''}">
 		        		<a class="page-link" href="/bbs/user/list?page=${page}">${page}</a>
 		        	</li>
-				</c:forEach>		        	
-		        	<li class="page-item"><a class="page-link" href=""> 다음 &raquo;</a></li>
+				</c:forEach>
+				
+				<c:if test="${totalPages gt endPage }">
+		        	<li class="page-item"><a class="page-link" href="/bbs/user/list?page=${endPage+1}">  &raquo;</a></li>
+		        </c:if>
+		        <c:if test="${totalPages eq endPage }">
+		        	<li class="page-item"><a class="page-link" href="#">  &raquo;</a></li>
+		        </c:if>
 		        </ul>
 		        
 			</div>			
