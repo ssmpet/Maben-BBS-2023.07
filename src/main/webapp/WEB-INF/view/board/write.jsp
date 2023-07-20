@@ -42,7 +42,7 @@
 			                    </tr>
 			                    <tr>
 			                        <td><label class="col-form-label">첨부파일</label></td>
-			                        <td><input type="file" accept=".png, .jpg, .jpeg, .gif, .bmp"  name="files" class="form-control" multiple></td>
+			                        <td><input type="file" accept=".*"  name="files" class="form-control" multiple></td>
 			                    </tr>
 			                    <tr>
 			                        <td colspan="2" style="text-align: center;">
