@@ -137,6 +137,24 @@ public class UserDao {
 		}
 	}
 	
+	public void updateUserPassword(String pwd, String uid) {
+		
+		Connection conn = getConnection();
+		String sql = "update users set pwd=? where uid=?";
+				
+		try {
+
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, pwd);
+			pstmt.setString(2, uid);
+			pstmt.executeUpdate();
+			pstmt.close();
+			conn.close();			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 	
 	public List<User> getUserList(int page) {
 		List<User> list = new ArrayList<User>();

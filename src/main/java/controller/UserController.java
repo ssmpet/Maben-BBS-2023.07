@@ -193,19 +193,20 @@ public class UserController extends HttpServlet {
 				try {
 					filename = filePart.getSubmittedFileName();
 					int dotPosition = filename.indexOf(".");
-					String firstPart = filename.substring(0, dotPosition);
 
-					if ( !(oldFilename == null && oldFilename.equals(""))) {
+					if ( !(oldFilename == null && oldFilename.equals("")) && !(filename == null && filename.equals(""))) {
 						File oldFile = new File(PROFILE_PATH + oldFilename);
 						oldFile.delete();
 					}
+					
+					String firstPart = filename.substring(0, dotPosition);
 					filename = filename.replace(firstPart, uid);
 					filePart.write(PROFILE_PATH + filename);			
 				} catch (Exception e) {
 					System.out.println("프로필 사진을 변경하지 않았습니다.");
 				}
 				filename = (filename == null || filename.equals("")) ? oldFilename : filename;
-				System.out.println(filename);
+//				System.out.println(filename);
 				user = new User(uid, uname, email, filename, addr);
 				uDao.updateUser(user);
 				request.getSession().setAttribute("uname", uname);
@@ -213,6 +214,38 @@ public class UserController extends HttpServlet {
 				request.getSession().setAttribute("profile", filename);
 				request.getSession().setAttribute("addr", addr);
 				response.sendRedirect("/bbs/user/list?page=" + session.getAttribute("currentUserPage"));
+			}
+			break;
+		case "updatePwd":
+			if (request.getMethod().equals("GET")) {
+				rd = request.getRequestDispatcher("/WEB-INF/view/user/updatePwd.jsp?uid=" + request.getParameter("uid"));
+				rd.forward(request, response);
+			} else {
+				uid = request.getParameter("uid");
+				pwd = request.getParameter("pwd");
+				pwd2 = request.getParameter("pwd2");
+		
+				// 패스워드 확인
+				if ( !(pwd == null || pwd.equals("")) ) {
+					// 패스워드와 패스워드확인이 같지 않으면 
+					if (!pwd.equals(pwd2)) {
+						request.setAttribute("msg", "패스워드 입력이 잘못되었습니다.");
+						request.setAttribute("url", "/bbs/user/updatePwd?uid=" + uid);
+					} else {
+
+						pwd = BCrypt.hashpw(pwd, BCrypt.gensalt());
+						uDao.updateUserPassword(pwd, uid);
+						request.setAttribute("msg", "패스워드가 변경되었습니다.");
+						request.setAttribute("url", "/bbs/user/update?uid=" + uid);
+					}
+				} else {
+					
+					request.setAttribute("msg", "패스워드를 입력하지 않았습니다.");
+					request.setAttribute("url", "/bbs/user/updatePwd?uid=" + uid);
+				}
+
+				rd = request.getRequestDispatcher("/WEB-INF/view/common/alertMsg.jsp");
+				rd.forward(request, response);					
 			}
 			break;
 			
@@ -243,7 +276,8 @@ public class UserController extends HttpServlet {
 			response.sendRedirect("/bbs/user/list?page=1");
 			break;
 		default:
-			System.out.println(request.getRequestURI() + "잘못된 경로입니다. ");
+			rd = request.getRequestDispatcher("/WEB-INF/view/error/error404.jsp");
+			rd.forward(request, response);
 			break;
 		
 		}

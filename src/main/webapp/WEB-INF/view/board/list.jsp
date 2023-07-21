@@ -62,7 +62,7 @@
 	            	<tr>
 	            		<td>${board.bid}</td>
 	            		<td>
-		            		<a href="/bbs/board/detail?bid=${board.bid}&uid=${board.uid}">${board.title}
+		            		<a href="/bbs/board/detail?bid=${board.bid}&uid=${board.uid}&f=${field}&q=${query}">${board.title}
 			            		<%-- 댓글수 --%>
 			            		<c:if test="${board.replyCount ge 1}">
 			            			<span class="text-danger">[${board.replyCount}]</span>

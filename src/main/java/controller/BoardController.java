@@ -1,6 +1,10 @@
 package controller;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -48,14 +52,16 @@ public class BoardController extends HttpServlet {
 
 		int bid = 0, page = 0;
 		String title = null, content = null, files = null, uid = null;
+		String field = null, query = null;
 		Board board = null;
+		List<String> fileList = null;
 
 
 		switch (action) {
 		case "list":
 			String page_ = req.getParameter("p");
-			String field = req.getParameter("f");
-			String query = req.getParameter("q");
+			field = req.getParameter("f");
+			query = req.getParameter("q");
 			
 			page = (page_ == null || page_.equals("") ? 1 : Integer.parseInt(page_));
 			field = (field == null || field.equals("") ? "title" : field);
@@ -72,9 +78,9 @@ public class BoardController extends HttpServlet {
 				pageList.add(String.valueOf(i));
 
 			session.setAttribute("currentBoardPage", page);
-			req.setAttribute("boardList", list);
 			req.setAttribute("field", field);
 			req.setAttribute("query", query);
+			req.setAttribute("boardList", list);
 			req.setAttribute("today", LocalDate.now().toString());
 			req.setAttribute("totalPages", totalPages);
 			req.setAttribute("startPage", startPage);
@@ -88,6 +94,8 @@ public class BoardController extends HttpServlet {
 		case "detail":
 			bid = Integer.parseInt(req.getParameter("bid"));
 			uid = req.getParameter("uid");
+			field = req.getParameter("f");
+			query = req.getParameter("q");
 			String option = req.getParameter("option");
 			
 //			System.out.println("detail uid = " + uid);
@@ -97,10 +105,10 @@ public class BoardController extends HttpServlet {
 				bDao.increaseViewCount(bid);
 
 			board = bDao.getBoard(bid);
-			
+
 			String jsonFiles = board.getFiles();
 			if (!(jsonFiles == null || jsonFiles.equals(""))) {
-				List<String> fileList = ju.jsonToList(board.getFiles());
+				fileList = ju.jsonToList(board.getFiles());
 				req.setAttribute("fileList", fileList);
 			}
 			
@@ -108,6 +116,8 @@ public class BoardController extends HttpServlet {
 			
 			req.setAttribute("board", board);
 			req.setAttribute("replyList", replyList);
+			req.setAttribute("field", field);
+			req.setAttribute("query", query);
 			rd = req.getRequestDispatcher("/WEB-INF/view/board/detail.jsp");
 			rd.forward(req, resp);
 			break;
@@ -121,13 +131,13 @@ public class BoardController extends HttpServlet {
 				content = req.getParameter("content");
 				
 				List<Part> fileParts = (List<Part>)req.getParts();
-				List<String> fileList = new ArrayList<String>();
+				fileList = new ArrayList<String>();
 				
-				System.out.println(fileParts.size());
+//				System.out.println(fileParts.size());
 				
 				for (Part part: fileParts) {
 					String filename = part.getSubmittedFileName();
-					if (filename == null) continue;
+					if (filename == null || filename.equals("")) continue;
 					
 //					System.out.println(filename);
 					
@@ -143,6 +153,94 @@ public class BoardController extends HttpServlet {
 				bDao.insertBoard(board);
 				resp.sendRedirect("/bbs/board/list?p=1&f=&q=");
 			}
+			break;
+			
+		case "update":
+			if (req.getMethod().equals("GET")) {
+				bid = Integer.parseInt(req.getParameter("bid"));
+				board = bDao.getBoard(bid);
+				board.setTitle(board.getTitle().replace("\"", "&quot;"));
+				fileList = ju.jsonToList(board.getFiles());
+				
+				req.setAttribute("board", board);
+//				req.setAttribute("fileList", fileList);
+				session.setAttribute("fileList", fileList);
+				
+				rd = req.getRequestDispatcher("/WEB-INF/view/board/update.jsp");
+				rd.forward(req, resp);
+			} else {
+				bid = Integer.parseInt(req.getParameter("bid"));
+				title = req.getParameter("title");
+				content = req.getParameter("content");
+				fileList = (List<String>)session.getAttribute("fileList");
+				
+				if (fileList != null && fileList.size() > 0) {
+					
+					String[] delFiles = req.getParameterValues("delFile");
+					if ( delFiles != null && delFiles.length > 0) {
+						for(String delFile: delFiles) {
+							fileList.remove(delFile);					// fileList에서 삭제
+							File df = new File(UPLOAD_PATH + delFile);	// 실제 파일 삭제
+							df.delete();
+						}
+					}
+				} else {
+					fileList = new ArrayList<String>();
+				}
+				
+				List<Part> fileParts = (List<Part>) req.getParts();
+				for (Part part: fileParts) {
+					String filename = part.getSubmittedFileName();
+					if (filename == null || filename.equals("")) continue;
+
+					part.write(UPLOAD_PATH + filename);
+					fileList.add(filename);
+				}
+
+				files = ju.listToJson(fileList);
+				board = new Board(bid, title, content, files);
+				bDao.updateBoard(board);
+				session.setAttribute("currentBoardPage", "1");
+				resp.sendRedirect("/bbs/board/detail?bid=" + bid + "&uid=" + sessionUid);
+			}
+			break;
+			
+		case "delete":
+			
+			bid = Integer.parseInt(req.getParameter("bid"));
+			req.setAttribute("field", req.getParameter("f"));
+			req.setAttribute("query", req.getParameter("q"));
+			
+			rd = req.getRequestDispatcher("/WEB-INF/view/board/delete.jsp?bid=" + bid);
+			rd.forward(req, resp);
+			break;
+			
+		case "deleteConfirm":
+			
+			bid = Integer.parseInt(req.getParameter("bid"));
+			bDao.deleteBoard(bid);
+			
+			req.setAttribute("f", req.getParameter("f"));
+			req.setAttribute("q", req.getParameter("q"));
+
+			rd = req.getRequestDispatcher("/WEB-INF/view/board/list.jsp?p=" + session.getAttribute("currentBoardPage"));
+			rd.forward(req, resp);
+			break;
+			
+//		case "testBoard":
+//			uid = sessionUid;
+//			title = "게시판 제목";
+//			content = "게시판 내용";
+//			for (int i=0; i<200; i++) {
+//				board = new Board(uid, title + i, content + i, null);
+//				bDao.insertBoard(board);
+//			}
+//			resp.sendRedirect("/bbs/board/list?p=1&f=&q=");
+//			break;
+
+		default:
+			rd = req.getRequestDispatcher("/WEB-INF/view/error/error500.jsp");
+			rd.forward(req, resp);
 			break;
 		}
 

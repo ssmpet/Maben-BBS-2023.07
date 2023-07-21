@@ -26,8 +26,8 @@
                 	<a class="nav-link" href="/bbs/user/login"><i class="fa-solid fa-right-to-bracket"></i>로그인</a>
 				</c:if>
             </li>
-            <%--c:if test="${uid eq 'admin' }">
-            	<a class="nav-link" href="/bbs/user/testuser">임시 사용자 등록</a>
+            <%-- c:if test="${uid eq 'admin' }">
+            	<a class="nav-link" href="/bbs/board/testBoard">임시 게시판 등록</a>
             </c:if--%>
         </ul>
         <span class="navbar-text me-3">${uname}님 환영합니다.</span>
