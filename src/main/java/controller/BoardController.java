@@ -67,9 +67,12 @@ public class BoardController extends HttpServlet {
 			field = (field == null || field.equals("") ? "title" : field);
 			query = (query == null || query.equals("") ? "" : query);
 			
-			List<Board> list = bDao.listBoard(field, query, page);
+			
 			int totalBoardCount = bDao.getBoardCount(field, query);
 			int totalPages = (int)Math.ceil(totalBoardCount / (double)LIST_PER_PAGE);
+			if (page > totalPages) page = totalPages;
+			
+			List<Board> list = bDao.listBoard(field, query, page);
 //			int startPage = (int)((page - 1) / PAGE_PER_SCREEN) + 1;  
 			int startPage = (int) Math.ceil((page-0.5)/PAGE_PER_SCREEN -1) * PAGE_PER_SCREEN + 1;
 			int endPage = Math.min(totalPages, startPage + PAGE_PER_SCREEN - 1);
@@ -220,11 +223,13 @@ public class BoardController extends HttpServlet {
 			bid = Integer.parseInt(req.getParameter("bid"));
 			bDao.deleteBoard(bid);
 			
-			req.setAttribute("f", req.getParameter("f"));
-			req.setAttribute("q", req.getParameter("q"));
+			req.setAttribute("p", session.getAttribute("currentBoardPage"));
+			field = req.getParameter("f");
+			query = URLEncoder.encode(req.getParameter("q"), "utf-8");
 
-			rd = req.getRequestDispatcher("/WEB-INF/view/board/list.jsp?p=" + session.getAttribute("currentBoardPage"));
-			rd.forward(req, resp);
+			resp.sendRedirect("/bbs/board/list?p="+ session.getAttribute("currentBoardPage") + "&f=" + field + "&q=" + query);
+//			rd = req.getRequestDispatcher("/WEB-INF/view/board/list.jsp?p=" + session.getAttribute("currentBoardPage"));
+//			rd.forward(req, resp);
 			break;
 			
 //		case "testBoard":

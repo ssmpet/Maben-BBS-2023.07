@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,7 +73,7 @@ public class BoardDao {
 				board.setUid(rs.getString(2));
 				board.setTitle(rs.getString(3));
 				board.setContent(rs.getString(4));
-				board.setModTime(LocalDateTime.parse(rs.getString(5).replace(" ", "T")));
+				board.setModTime(LocalDateTime.parse( rs.getString(5).replace(" ", "T")));
 				board.setViewCount(rs.getInt(6));
 				board.setReplyCount(rs.getInt(7));
 				board.setFiles(rs.getString(8));

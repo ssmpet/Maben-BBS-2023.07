@@ -34,7 +34,6 @@
                     </c:if>
                     </span>
                 </h3>
-	                
 				<hr>
 				<div class="row">
                     <div class="col-8">
