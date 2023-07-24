@@ -44,12 +44,6 @@ public class User {
 		this.addr = addr;
 	}
 	
-	@Override
-	public String toString() {
-		return "Users [uid=" + uid + ", pwd=" + pwd + ", uname=" + uname + ", email=" + email + ", regDate=" + regDate
-				+ ", isDeleted=" + isDeleted + ", profile=" + profile + ", addr=" + addr + "]";
-	}
-
 	public String getUid() {
 		return uid;
 	}

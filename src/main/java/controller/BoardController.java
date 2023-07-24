@@ -121,13 +121,15 @@ public class BoardController extends HttpServlet {
 			req.setAttribute("replyList", replyList);
 			req.setAttribute("field", field);
 			req.setAttribute("query", query);
-			rd = req.getRequestDispatcher("/WEB-INF/view/board/detail.jsp");
+//			rd = req.getRequestDispatcher("/WEB-INF/view/board/detail.jsp");
+			rd = req.getRequestDispatcher("/WEB-INF/view/board/detailEditor.jsp");
 			rd.forward(req, resp);
 			break;
 			
 		case "write":
 			if (req.getMethod().equals("GET")) {
-				rd = req.getRequestDispatcher("/WEB-INF/view/board/write.jsp");
+//				rd = req.getRequestDispatcher("/WEB-INF/view/board/write.jsp");
+				rd = req.getRequestDispatcher("/WEB-INF/view/board/writeEditor.jsp");
 				rd.forward(req, resp);
 			} else {
 				title = req.getParameter("title");
@@ -169,7 +171,8 @@ public class BoardController extends HttpServlet {
 //				req.setAttribute("fileList", fileList);
 				session.setAttribute("fileList", fileList);
 				
-				rd = req.getRequestDispatcher("/WEB-INF/view/board/update.jsp");
+//				rd = req.getRequestDispatcher("/WEB-INF/view/board/update.jsp");
+				rd = req.getRequestDispatcher("/WEB-INF/view/board/updateEditor.jsp");
 				rd.forward(req, resp);
 			} else {
 				bid = Integer.parseInt(req.getParameter("bid"));

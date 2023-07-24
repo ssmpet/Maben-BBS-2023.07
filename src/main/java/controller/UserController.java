@@ -23,6 +23,7 @@ import com.mysql.cj.x.protobuf.MysqlxCrud.Delete;
 
 import db.UserDao;
 import entity.User;
+import utility.AsideUtil;
 import utility.UserService;
 
 /**
@@ -46,6 +47,7 @@ public class UserController extends HttpServlet {
 		HttpSession session = request.getSession();
 		session.setAttribute("menu", "user");
 		UserDao uDao = new UserDao();
+		AsideUtil au = new AsideUtil();
 		
 		RequestDispatcher rd = null;
 		User user = null;
@@ -68,12 +70,17 @@ public class UserController extends HttpServlet {
 				if (result == UserService.CORRECT_LOGIN) {
 
 					user = uDao.getUser(uid);
-					request.getSession().setAttribute("uid", uid);
-					request.getSession().setAttribute("uname", user.getUname());
-					request.getSession().setAttribute("email", user.getEmail());
-					request.getSession().setAttribute("profile", user.getProfile());
-					request.getSession().setAttribute("addr", user.getAddr());
-				
+					session.setAttribute("uid", uid);
+					session.setAttribute("uname", user.getUname());
+					session.setAttribute("email", user.getEmail());
+					session.setAttribute("profile", user.getProfile());
+					session.setAttribute("addr", user.getAddr());
+					
+					// 상태 메세지
+					String quoteFile = getServletContext().getRealPath("/") + "WEB-INF/view/data/todayQuote.txt";
+					String stateMsg = au.getTodayQuote(quoteFile);
+					session.setAttribute("stateMsg", stateMsg);
+					
 					request.setAttribute("msg", user.getUname() + "님 환영합니다.");
 					request.setAttribute("url", "/bbs/board/list?p=1&f=&q=");
 					rd = request.getRequestDispatcher("/WEB-INF/view/common/alertMsg.jsp");

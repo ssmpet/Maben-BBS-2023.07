@@ -28,11 +28,7 @@ public class Reply {
 		this.bid = bid;
 		this.uname = uname;
 	}
-	@Override
-	public String toString() {
-		return "Reply [rid=" + rid + ", comment=" + comment + ", regTime=" + regTime + ", isMine=" + isMine + ", uid="
-				+ uid + ", bid=" + bid + ", uname=" + uname + "]";
-	}
+	
 	public int getRid() {
 		return rid;
 	}

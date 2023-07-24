@@ -60,13 +60,6 @@ public class Board {
 		this.uname = uname;
 	}
 
-	@Override
-	public String toString() {
-		return "Board [bid=" + bid + ", uid=" + uid + ", title=" + title + ", content=" + content + ", modTime="
-				+ modTime + ", viewCount=" + viewCount + ", replyCount=" + replyCount + ", isDeleted=" + isDeleted
-				+ ", files=" + files + ", uname=" + uname + "]";
-	}
-
 	public int getBid() {
 		return bid;
 	}
