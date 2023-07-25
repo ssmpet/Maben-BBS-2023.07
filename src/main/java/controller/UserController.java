@@ -153,6 +153,9 @@ public class UserController extends HttpServlet {
 					String firstPart = filename.substring(0, dotPosition);
 					filename = filename.replace(firstPart, uid);
 					filePart.write(PROFILE_PATH + filename);
+					
+					filename = au.squareImage(filename);
+					
 				} catch (Exception e) {
 					System.out.println("프로필 사진을 입력하지 않았습니다.");			
 				}
@@ -212,7 +215,12 @@ public class UserController extends HttpServlet {
 				} catch (Exception e) {
 					System.out.println("프로필 사진을 변경하지 않았습니다.");
 				}
-				filename = (filename == null || filename.equals("")) ? oldFilename : filename;
+				
+				if (filename == null || filename.equals("")) {
+					filename = oldFilename;
+				} else {
+					filename = au.squareImage(filename);
+				}
 //				System.out.println(filename);
 				user = new User(uid, uname, email, filename, addr);
 				uDao.updateUser(user);
