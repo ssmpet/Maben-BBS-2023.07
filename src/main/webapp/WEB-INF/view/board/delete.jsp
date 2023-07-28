@@ -24,7 +24,7 @@
 			            		<p class="card-text text-center">
 			            			<br>
 			            			<button class="btn btn-primary" onclick="location.href='/bbs/board/deleteConfirm?bid=${param.bid}&f=${field}&q=${query}'">삭제</button>
-			            			<button class="btn btn-secondary" onclick="location.href='/bbs/board/list?p=${currentBoardPage}&f=${field}&q=${query}'">취소</button>
+			            			<button class="btn btn-secondary" onclick="location.href='/bbs/board/detail?bid=${param.bid}&uid=${uid}&f=${field}&q=${query}'">취소</button>
 			            		</p>
 			            	</div>
 			            </div>

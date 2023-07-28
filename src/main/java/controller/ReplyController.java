@@ -35,18 +35,15 @@ public class ReplyController extends HttpServlet {
 			int bid = Integer.parseInt(req.getParameter("bid"));
 			String uid = req.getParameter("uid");
 			String comment = req.getParameter("comment");
-
-//			System.out.println("uid = " + uid);
-//			System.out.println("session= uid " + sessionUid);
+			String field = req.getParameter("f");
+			String query = req.getParameter("q");
 
 			int isMine = uid.equals(sessionUid) ? 1 : 0;
 			Reply reply = new Reply(comment, isMine, sessionUid, bid);
 			rDao.insertReply(reply);
 			bDao.increaseReplyCount(bid);
-			resp.sendRedirect("/bbs/board/detail?bid=" + bid + "&uid=" + uid + "&option=DNI");
+			resp.sendRedirect("/bbs/board/detail?bid=" + bid + "&uid=" + uid + "&option=DNI&f=" + field + "&q=" + query);
 			break;
 		}
 	}
-
-
 }

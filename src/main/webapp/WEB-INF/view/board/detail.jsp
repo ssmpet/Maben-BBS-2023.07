@@ -82,6 +82,8 @@
                         <form class="form-inline" action="/bbs/reply/write" method="post">
                             <input type="hidden" name="bid" value="${board.bid}">
                             <input type="hidden" name="uid" value="${board.uid}">
+                            <input type="hidden" name="f" value="${field}">
+                            <input type="hidden" name="q" value="${query}">
                             <table class="table table-borderless mt-2">
                                 <tr class="d-flex">
                                     <td class="col-1 text-end">

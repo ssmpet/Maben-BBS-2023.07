@@ -210,7 +210,7 @@ public class BoardController extends HttpServlet {
 				resp.sendRedirect("/bbs/board/detail?bid=" + bid + "&uid=" + sessionUid);
 			}
 			break;
-			
+
 		case "delete":
 			
 			bid = Integer.parseInt(req.getParameter("bid"));
@@ -222,7 +222,7 @@ public class BoardController extends HttpServlet {
 			break;
 			
 		case "deleteConfirm":
-			
+
 			bid = Integer.parseInt(req.getParameter("bid"));
 			bDao.deleteBoard(bid);
 			
