@@ -2,14 +2,26 @@ SET SESSION FOREIGN_KEY_CHECKS=0;
 
 /* Drop Tables */
 
+DROP TABLE IF EXISTS anniversary;
 DROP TABLE IF EXISTS reply;
 DROP TABLE IF EXISTS board;
+DROP TABLE IF EXISTS SCHEDULE;
 DROP TABLE IF EXISTS users;
 
 
 
 
 /* Create Tables */
+
+CREATE TABLE anniversary
+(
+	aid int NOT NULL AUTO_INCREMENT,
+	aname varchar(20),
+	adate varchar(10),
+	isHoliday int DEFAULT 0,
+	PRIMARY KEY (aid)
+);
+
 
 CREATE TABLE board
 (
@@ -35,6 +47,21 @@ CREATE TABLE reply
 	uid varchar(16) NOT NULL,
 	bid int NOT NULL,
 	PRIMARY KEY (rid)
+);
+
+
+CREATE TABLE SCHEDULE
+(
+	sid int NOT NULL AUTO_INCREMENT,
+	uid varchar(16) NOT NULL,
+	sdate char(8) NOT NULL,
+	title varchar(40) NOT NULL,
+	place varchar(40),
+	startTime datetime,
+	endTime datetime,
+	isImportant int DEFAULT 0,
+	memo varchar(100),
+	PRIMARY KEY (sid)
 );
 
 
@@ -72,6 +99,14 @@ ALTER TABLE board
 
 
 ALTER TABLE reply
+	ADD FOREIGN KEY (uid)
+	REFERENCES users (uid)
+	ON UPDATE RESTRICT
+	ON DELETE RESTRICT
+;
+
+
+ALTER TABLE SCHEDULE
 	ADD FOREIGN KEY (uid)
 	REFERENCES users (uid)
 	ON UPDATE RESTRICT

@@ -1,35 +1,52 @@
 
 /* Drop Triggers */
 
+DROP TRIGGER TRI_anniversary_aid;
 DROP TRIGGER TRI_board_bid;
 DROP TRIGGER TRI_reply_rid;
+DROP TRIGGER TRI_SCHEDULE_sid;
+
 
 
 
 /* Drop Tables */
 
+DROP TABLE anniversary CASCADE CONSTRAINTS;
 DROP TABLE reply CASCADE CONSTRAINTS;
 DROP TABLE board CASCADE CONSTRAINTS;
+DROP TABLE SCHEDULE CASCADE CONSTRAINTS;
 DROP TABLE users CASCADE CONSTRAINTS;
 
 
 
 /* Drop Sequences */
 
+DROP SEQUENCE SEQ_anniversary_aid;
 DROP SEQUENCE SEQ_board_bid;
 DROP SEQUENCE SEQ_reply_rid;
-
+DROP SEQUENCE SEQ_SCHEDULE_sid;
 
 
 
 /* Create Sequences */
 
+CREATE SEQUENCE SEQ_anniversary_aid INCREMENT BY 1 START WITH 1;
 CREATE SEQUENCE SEQ_board_bid INCREMENT BY 1 START WITH 1001;
 CREATE SEQUENCE SEQ_reply_rid INCREMENT BY 1 START WITH 1001;
-
+CREATE SEQUENCE SEQ_SCHEDULE_sid INCREMENT BY 1 START WITH 1;
 
 
 /* Create Tables */
+
+CREATE TABLE anniversary
+(
+	aid number(10,0) NOT NULL,
+	aname varchar2(20),
+	adate varchar2(10),
+	isHoliday number(10,0) DEFAULT 0,
+	PRIMARY KEY (aid)
+);
+
 
 CREATE TABLE board
 (
@@ -55,6 +72,21 @@ CREATE TABLE reply
 	"uid" varchar2(16) NOT NULL,
 	bid number(10,0) NOT NULL,
 	PRIMARY KEY (rid)
+);
+
+
+CREATE TABLE SCHEDULE
+(
+	sid number(10,0) NOT NULL,
+	"uid" varchar2(16) NOT NULL,
+	sdate char(8) NOT NULL,
+	title varchar2(40) NOT NULL,
+	place varchar2(40),
+	startTime timestamp,
+	endTime timestamp,
+	isImportant number(10,0) DEFAULT 0,
+	memo varchar2(100),
+	PRIMARY KEY (sid)
 );
 
 
@@ -93,8 +125,24 @@ ALTER TABLE reply
 ;
 
 
+ALTER TABLE SCHEDULE
+	ADD FOREIGN KEY ("uid")
+	REFERENCES users ("uid")
+;
+
 
 /* Create Triggers */
+
+
+CREATE OR REPLACE TRIGGER TRI_anniversary_aid BEFORE INSERT ON anniversary
+FOR EACH ROW
+BEGIN
+	SELECT SEQ_anniversary_aid.nextval
+	INTO :new.aid
+	FROM dual;
+END;
+
+/
 
 CREATE OR REPLACE TRIGGER TRI_board_bid BEFORE INSERT ON board
 FOR EACH ROW
@@ -116,6 +164,15 @@ END;
 
 /
 
+CREATE OR REPLACE TRIGGER TRI_SCHEDULE_sid BEFORE INSERT ON SCHEDULE
+FOR EACH ROW
+BEGIN
+	SELECT SEQ_SCHEDULE_sid.nextval
+	INTO :new.sid
+	FROM dual;
+END;
+
+/
 
 
 
